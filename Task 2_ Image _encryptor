@@ -1,0 +1,92 @@
+from PIL import Image
+
+def encrypt_swap_pixels(image_path, output_path):
+   
+    try:
+        # Open the image
+        img = Image.open(image_path)
+        pixels = img.load() # Load pixel data
+        width, height = img.size
+
+        # Iterate through each pixel
+        for x in range(width):
+            for y in range(height):
+                r, g, b = pixels[x, y]
+                # Swap the Red and Blue values
+                pixels[x, y] = (b, g, r)
+
+        # Save the encrypted image
+        img.save(output_path)
+        print(f"✅ Image encrypted by swapping pixels and saved to {output_path}")
+
+    except Exception as e:
+        print(f"❌ Error: {e}")
+
+def decrypt_swap_pixels(image_path, output_path):
+    """
+    Decrypts an image by swapping the Red and Blue channels back.
+    It's the same operation as encryption!
+    (B, G, R) -> (R, G, B)
+    """
+    # The swapping logic is its own inverse, so we can just call the encrypt function.
+    encrypt_swap_pixels(image_path, output_path)
+    print(f"✅ Image decrypted by swapping pixels and saved to {output_path}")
+
+
+def encrypt_xor(image_path, key, output_path):
+    """
+    Encrypts an image by applying a mathematical XOR operation with a key.
+    """
+    try:
+        img = Image.open(image_path)
+        pixels = img.load()
+        width, height = img.size
+
+        for x in range(width):
+            for y in range(height):
+                r, g, b = pixels[x, y]
+                # Apply XOR operation with the key
+                # The ^ symbol is the XOR operator in Python
+                r = r ^ key
+                g = g ^ key
+                b = b ^ key
+                pixels[x, y] = (r, g, b)
+
+        img.save(output_path)
+        print(f"✅ Image encrypted with XOR and saved to {output_path}")
+
+    except Exception as e:
+        print(f"❌ Error: {e}")
+
+def decrypt_xor(image_path, key, output_path):
+    """
+    Decrypts an image by applying the same XOR operation with the same key.
+    """
+    # XOR is its own inverse, so decryption is the same as encryption.
+    encrypt_xor(image_path, key, output_path)
+    print(f"✅ Image decrypted with XOR and saved to {output_path}")
+
+
+# --- HOW TO USE IT ---
+if __name__ == "__main__":
+    # Make sure you have an image named 'original.png' in the same folder as this script.
+    original_image = 'original.png'
+    key = 123 # A number between 0 and 255 for the XOR operation
+
+    # --- Method 1: Swapping Pixel Values ---
+    print("--- Running Pixel Swap Method ---")
+    encrypted_swap_path = 'encrypted_swap.png'
+    decrypted_swap_path = 'decrypted_swap.png'
+    
+    encrypt_swap_pixels(original_image, encrypted_swap_path)
+    decrypt_swap_pixels(encrypted_swap_path, decrypted_swap_path)
+    print("-" * 30)
+
+    # --- Method 2: Mathematical Operation (XOR) ---
+    print("--- Running Mathematical XOR Method ---")
+    encrypted_xor_path = 'encrypted_xor.png'
+    decrypted_xor_path = 'decrypted_xor.png'
+
+    encrypt_xor(original_image, key, encrypted_xor_path)
+    decrypt_xor(encrypted_xor_path, key, decrypted_xor_path)
+    print("-" * 30)
