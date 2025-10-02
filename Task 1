@@ -1,0 +1,55 @@
+def caesar_cipher(text, shift, mode):
+    """
+    Encrypts or decrypts text using the Caesar Cipher algorithm.
+
+    Args:
+        text (str): The message to be processed.
+        shift (int): The number of positions to shift letters.
+        mode (str): 'encrypt' or 'decrypt'.
+
+    Returns:
+        str: The processed (encrypted or decrypted) message.
+    """
+    result = ""
+    
+    if mode == 'decrypt':
+        shift = -shift
+
+    for char in text:
+        # Check if the character is an alphabet letter
+        if char.isalpha():
+            start = ord('a') if char.islower() else ord('A')
+            # Find the position of the character (0-25)
+            char_pos = ord(char) - start
+            # Shift the character's position, wrapping around the alphabet
+            new_pos = (char_pos + shift) % 26
+            # Convert the new position back to a character
+            result += chr(start + new_pos)
+        else:
+            # If it's not a letter (e.g., space, punctuation), keep it as is
+            result += char
+            
+    return result
+
+# --- Main Program ---
+print("--- Caesar Cipher Program ---")
+
+# Get user input
+message = input("Enter your message: ")
+try:
+    shift_key = int(input("Enter the shift value (a number): "))
+    
+    # Get user's choice for encryption or decryption
+    choice = input("Do you want to (e)ncrypt or (d)ecrypt? ").lower()
+
+    if choice in ['e', 'encrypt']:
+        encrypted_message = caesar_cipher(message, shift_key, 'encrypt')
+        print(f"\nEncrypted Message: {encrypted_message}")
+    elif choice in ['d', 'decrypt']:
+        decrypted_message = caesar_cipher(message, shift_key, 'decrypt')
+        print(f"\nDecrypted Message: {decrypted_message}")
+    else:
+        print("Invalid choice! Please enter 'e' or 'd'.")
+
+except ValueError:
+    print("Invalid shift value. Please enter a whole number.")
